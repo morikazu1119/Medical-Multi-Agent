@@ -1,0 +1,9 @@
+fastmcp
+mcp
+dotenv
+hydra-core
+google-genai
+pytest
+pre-commit
+pillow
+pytest-asyncio

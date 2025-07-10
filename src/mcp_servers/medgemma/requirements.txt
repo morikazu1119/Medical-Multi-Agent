@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+mcp
+accelerate
+transformers
+torch
+torchvision
+Pillow
+huggingface_hub
+pydantic

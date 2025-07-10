@@ -1,0 +1,2 @@
+pipeline:
+  mcp_urls: ["http://localhost:1115/mcp/", "http://localhost:1116/mcp/"]
