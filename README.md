@@ -7,6 +7,8 @@ MCPクライアントにユーザーからプロンプトで指示を出すこ�
 MCPクライアントの構造はかなり単純であるため、より深いAI同士の議論には、コードの改良やプロンプトの最適化が必要となってきます。
 今後も少しずつ改良を進めていけたらと思います。
 
+**※コンテナ間のモデルはvolumeで共有しています。そのため、volumeを作成し、その中にhugginfaceからダウンロードしたモデルを格納する必要があります。しかし、Geminiコンテナであれば、無料枠のAPIで利用できるのとvolumeが必要ないため、手っ取り早く試したい方はGeminiコンテナがおすすめです。**
+
 ## ✨ 主な特徴
 
 - **複数のLLMサーバー**: Gemini, MedGemmaなど、複数のLLMサーバーをサポートしています。
@@ -17,16 +19,24 @@ MCPクライアントの構造はかなり単純であるため、より深いAI
 
 1.  **リポジトリをクローンします:**
     ```bash
-    git clone xxx
-    cd xxx
+    [git clone xxx](https://github.com/morikazu1119/Medical-Multi-Agent.git)
+    cd Medical-Multi-Agent
+    ```
+2.  **key.envの作成**
+
+    以下のコマンドでenvファイル作成後に`GEMINI_API_KEY="your_api_key"`を記載してください。
+    ```bash
+    touch key.env
     ```
 
-2.  **Pythonの依存関係をインストールします:**
+4.  **Pythonの依存関係をインストールします:**
     ```bash
+    python -m venv .venv
+    source .venv/bin/activate
     pip install -r requirements.txt
     ```
 
-3.  **pre-commitフックをインストールします:**
+5.  **pre-commitフックをインストールします:**
     ```bash
     pre-commit install
     ```
@@ -43,12 +53,12 @@ docker-compose up -d --build
 
 ### クライアントの実行
 
-（ここにクライアントの実行方法を記述します。例: `check_single_mcp.py`）
-
+こちらはスクリプト内で実行するMCPのURLを1つ決めてください
 ```bash
 python src/check_single_mcp.py
 ```
 
+こちらは`src/config/config.yaml`の`mcp_url`に配列でURLを指定してください。
 ```bash
 python src/check_multi_mcp.py
 ```
