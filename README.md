@@ -49,6 +49,10 @@ docker-compose up -d --build
 python src/check_single_mcp.py
 ```
 
+```bash
+python src/check_multi_mcp.py
+```
+
 ## ✅ テスト
 
 `pytest`を使用してテストを実行します。
