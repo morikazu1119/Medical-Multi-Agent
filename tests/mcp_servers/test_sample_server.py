@@ -4,7 +4,7 @@ import pytest
 from fastmcp import Client
 from fastmcp.exceptions import ToolError
 
-BASE_URL = "http://localhost:1111/mcp"  # テスト用のMCPサーバーURL
+BASE_URL = "http://localhost:10001/mcp"  # テスト用のMCPサーバーURL
 
 
 @pytest.mark.asyncio

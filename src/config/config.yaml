@@ -1,2 +1,32 @@
 pipeline:
-  mcp_urls: ["http://localhost:1115/mcp/", "http://localhost:1116/mcp/"]
+  # MCP API 設定
+  mcp_urls: ["http://localhost:10002/mcp/", "http://localhost:10004/mcp/"]
+
+container:
+  medgemma:
+    mcp_name: "medgemma-4b-it" # MCP名
+    model_id: "/mnt/slum/models/medgemma-4b-it" # google/medgemma-4b-it
+    quant_mode: 4bit # 量子化モード (4bit, 8bit, or None)
+    max_tokens: 512 # 最大トークン数
+    temperature: 0.2 # 温度パラメータ
+
+  mediphi:
+    mcp_name: "Mediphi-it" # MCP名
+    model_id: "/mnt/slum/models/MediPhi-it" # microsoft/MediPhi-it
+    quant_mode: 4bit # 量子化モード (4bit, 8bit, or None)
+    max_tokens: 512 # 最大トークン数
+    temperature: 0.2 # 温度パラメータ
+
+  medsiglip:
+    mcp_name: "medsiglip-448" # MCP名
+    model_id: "/mnt/slum/models/medsiglip-448" # google/medsiglip-448
+    quant_mode: 4bit # 量子化モード (4bit, 8bit, or None)
+    max_tokens: 512 # 最大トークン数
+    temperature: 0.2 # 温度パラメータ
+
+  lingshu:
+    mcp_name: "Lingshu-7b" # MCP名
+    model_id: "/mnt/slum/models/Lingshu-7b" # lingshu-medical-mllm/Lingshu-7B
+    quant_mode: 4bit # 量子化モード (4bit, 8bit, or None)
+    max_tokens: 512 # 最大トークン数
+    temperature: 0.2 # 温度パラメータ

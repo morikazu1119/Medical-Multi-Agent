@@ -6,7 +6,7 @@ from fastmcp import Client
 from fastmcp.exceptions import ToolError
 from PIL import Image
 
-BASE_URL = "http://localhost:1115/mcp"
+BASE_URL = "http://localhost:10003/mcp"
 
 
 def make_test_image_b64() -> str:

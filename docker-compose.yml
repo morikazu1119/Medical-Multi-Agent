@@ -1,14 +1,23 @@
 services:
+  # 事前にtorchをインストールしたベースイメージを作成
+  # 各コンテナのtorchのインストール時間を短縮
+  torch-cuda:
+    build:
+      context: ./docker/base/torch-cuda
+      dockerfile: Dockerfile
+    container_name: torch_cuda
+    image: torch-cuda
+
   sample:
     build:
       context: ./src/mcp_servers/sample
       dockerfile: Dockerfile
       args:
         HOST: 0.0.0.0
-        PORT: 1111
-    container_name: sample-server
+        PORT: 10001
+    container_name: sample_server
     ports:
-      - "1111:1111"
+      - "10001:10001"
     restart: unless-stopped
 
   gemini:
@@ -17,70 +26,76 @@ services:
       dockerfile: Dockerfile
       args:
         HOST: 0.0.0.0
-        PORT: 1113
+        PORT: 10002
+    container_name: gemini_server
     volumes:
       - ./key.env:/app/key.env
-    container_name: gemini-server
+      - ./src/config/config.yaml:/app/config.yaml
     ports:
-      - "1113:1113"
+      - "10002:10002"
     restart: unless-stopped
-
-  medgemma:
-    build:
-      context: ./src/mcp_servers/medgemma
-      dockerfile: Dockerfile
-      args:
-        HOST: 0.0.0.0
-        PORT: 1114
-    container_name: medgemma-server
-    ports:
-      - "1114:1114"
-    restart: unless-stopped
-    volumes:
-      - slum-volume:/mnt/slum
-      - ./key.env:/app/key.env
-    gpus:
-      - count: all
-      - devices: all
 
   medgemma-bnb:
+    depends_on:
+      - torch-cuda
     build:
       context: ./src/mcp_servers/medgemma-bnb
       dockerfile: Dockerfile
       args:
         HOST: 0.0.0.0
-        PORT: 1115
-    container_name: medgemma-bnb-server
+        PORT: 10003
+    container_name: medgemma-bnb_server
     ports:
-      - "1115:1115"
+      - "10003:10003"
     restart: unless-stopped
     volumes:
       - slum-volume:/mnt/slum
-      - ./key.env:/app/key.env
-    gpus:
-      - count: all
-      - devices: all
-      
-  medgemma-bnb-2:
-    build:
-      context: ./src/mcp_servers/medgemma-bnb
-      dockerfile: Dockerfile
-      args:
-        HOST: 0.0.0.0
-        PORT: 1116
-    container_name: medgemma-bnb-2-server
-    ports:
-      - "1116:1116"
-    restart: unless-stopped
-    volumes:
-      - slum-volume:/mnt/slum
-      - ./key.env:/app/key.env
+      - ./src/config/config.yaml:/app/config.yaml
     gpus:
       - count: all
       - devices: all
 
-# volumeは外部ボリュームを使用するため、事前に作成しておく必要があります。
+  lingshu-bnb:
+    depends_on:
+      - torch-cuda
+    build:
+      context: ./src/mcp_servers/lingshu-bnb
+      dockerfile: Dockerfile
+      args:
+        HOST: 0.0.0.0
+        PORT: 10004
+    container_name: lingshu-bnb_server
+    ports:
+      - "10004:10004"
+    restart: unless-stopped
+    volumes:
+      - slum-volume:/mnt/slum
+      - ./src/config/config.yaml:/app/config.yaml
+    gpus:
+      - count: all
+      - devices: all
+
+  # TODO: コードの修正
+  # medsiglip-mediphi-bnb:
+  #   depends_on:
+  #     - torch-cuda
+  #   build:
+  #     context: ./src/mcp_servers/medsiglip-mediphi-bnb
+  #     dockerfile: Dockerfile
+  #     args:
+  #       HOST: 0.0.0.0
+  #       PORT: 1117
+  #   container_name: medsiglip-mediphi-bnb_server
+  #   ports:
+  #     - "1117:1117"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - slum-volume:/mnt/slum
+  #     - ./src/config/config.yaml:/app/config.yaml
+  #   gpus:
+  #     - count: all
+  #     - devices: all
+
 volumes:
   slum-volume:
     external: true
-

@@ -1,11 +1,10 @@
-
 mcp
 accelerate
 transformers
-
 Pillow
 huggingface_hub
 pydantic
 bitsandbytes
+qwen_vl_utils
 hydra-core
 flash-attn

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================
-#  MedGEMMA-4B-IT + bitsandbytes 量子化（4bit / 8bit）
+#  Lingshu-7B + bitsandbytes 量子化（4bit / 8bit）
 #  子プロセス方式 FastMCP サーバー
 # =============================================================
 import argparse
@@ -17,14 +17,19 @@ from mcp.server.fastmcp import FastMCP
 from omegaconf import OmegaConf
 from PIL import Image
 from pydantic import BaseModel
-from transformers import AutoModelForImageTextToText, AutoProcessor, BitsAndBytesConfig
+from qwen_vl_utils import process_vision_info
+from transformers import (
+    AutoProcessor,
+    BitsAndBytesConfig,
+    Qwen2_5_VLForConditionalGeneration,
+)
 
 # -------------------------------------------------------------
 # 基本設定
 # -------------------------------------------------------------
 logging.basicConfig(level=logging.INFO)
 cfg = OmegaConf.load("config.yaml")
-mcp = FastMCP(cfg.container.medgemma.mcp_name)
+mcp = FastMCP(cfg.container.lingshu.mcp_name)
 
 
 # -------------------------------------------------------------
@@ -51,8 +56,9 @@ def _infer_worker(conn, messages, quant_mode: str):
             bnb_cfg = None
 
         logging.info(f"[Child] Loading model ({quant_mode}) …")
-        model = AutoModelForImageTextToText.from_pretrained(
-            cfg.container.medgemma.model_id,
+
+        model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            cfg.container.lingshu.model_id,
             quantization_config=bnb_cfg,
             device_map="auto",
             trust_remote_code=True,
@@ -64,7 +70,7 @@ def _infer_worker(conn, messages, quant_mode: str):
         )
 
         processor = AutoProcessor.from_pretrained(
-            cfg.container.medgemma.model_id,
+            cfg.container.lingshu.model_id,
             local_files_only=True,
             use_fast=True,
             image_processor_kwargs={"input_data_format": "HWC"},
@@ -73,13 +79,22 @@ def _infer_worker(conn, messages, quant_mode: str):
         # --- 2) 推論 -------------------------------------------------------
         logging.info("[Child] Starting inference...")
 
-        inputs = processor.apply_chat_template(
+        text = processor.apply_chat_template(
             messages,
             add_generation_prompt=True,
-            tokenize=True,
-            return_dict=True,
+            tokenize=False,
+        )
+
+        image_inputs, video_inputs = process_vision_info(messages)
+
+        inputs = processor(
+            text=[text],
+            images=image_inputs,
+            videos=video_inputs,
+            padding=True,
             return_tensors="pt",
-        ).to(model.device, dtype=torch.bfloat16)
+        )
+        inputs = inputs.to(model.device)
 
         logging.info(f"[Child] Model device: {next(model.parameters()).device}")
         logging.info(f"[Child] Input tensor device: {inputs.input_ids.device}")
@@ -87,14 +102,21 @@ def _infer_worker(conn, messages, quant_mode: str):
         with torch.inference_mode():
             output_ids = model.generate(
                 **inputs,
-                max_new_tokens=cfg.container.medgemma.max_tokens,
-                do_sample=False,
-                temperature=cfg.container.medgemma.temperature,
-            )[0][inputs["input_ids"].shape[-1] :]
+                max_new_tokens=cfg.container.lingshu.max_tokens,
+                temperature=cfg.container.lingshu.temperature,
+            )
 
-        diagnosis = processor.decode(output_ids, skip_special_tokens=True)
+        output_ids_trimmed = [
+            out_ids[len(in_ids) :]
+            for in_ids, out_ids in zip(inputs.input_ids, output_ids)
+        ]
+        output_text = processor.batch_decode(
+            output_ids_trimmed,
+            skip_special_tokens=True,
+            clean_up_tokenization_spaces=False,
+        )
         logging.info("[Child] Inference completed successfully.")
-        conn.send(diagnosis)
+        conn.send(output_text)  # 子プロセスから親プロセスへ結果を送信
 
     finally:
         # --- 3) 後片付け ---------------------------------------------------
@@ -168,10 +190,11 @@ def diagnose(request: MCPRequest) -> MCPResponse:
     parent_conn, child_conn = mp.Pipe(duplex=False)
     proc = mp.Process(
         target=_infer_worker,
-        args=(child_conn, messages, cfg.container.medgemma.quant_mode),
+        args=(child_conn, messages, cfg.container.lingshu.quant_mode),
     )
     proc.start()
-    diag_text = parent_conn.recv()  # 推論結果を受け取る
+    diag_list = parent_conn.recv()  # 推論結果を受け取る
+    diag_text = "\n".join(diag_list)
     proc.join()  # 子プロセス終了を待機
 
     return MCPResponse(diagnosis=diag_text)
