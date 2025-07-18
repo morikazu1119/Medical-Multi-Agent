@@ -6,7 +6,8 @@ from fastmcp import Client
 from fastmcp.exceptions import ToolError
 from PIL import Image
 
-BASE_URL = "http://localhost:1114/mcp"
+# Docker コンテナで起動した MCP サーバーのエンドポイント
+BASE_URL = "http://localhost:10004/mcp"
 
 
 def make_test_image_b64() -> str:
@@ -20,11 +21,12 @@ def make_test_image_b64() -> str:
 async def test_invalid_base64_image_integration():
     """不正な base64 文字列を送ると ToolError（画像デコード失敗）が返る"""
     async with Client(BASE_URL, timeout=10) as client:
-        with pytest.raises(ToolError, match="失敗"):
+        with pytest.raises(ToolError) as excinfo:
             await client.call_tool(
                 "diagnose",
                 {"request": {"image": "not-a-valid-base64!!!", "symptom": "頭痛があります"}},
             )
+        assert "失敗" in str(excinfo.value)
 
 
 @pytest.mark.asyncio
@@ -34,9 +36,10 @@ async def test_text_only_integration():
         result = await client.call_tool(
             "diagnose", {"request": {"symptom": "頭痛と発熱があります"}}
         )
+    # content はリスト形式なので最初の TextContent の .text を取り出して検証
     text = result.content[0].text
     assert isinstance(text, str)
-    assert len(text) > 10
+    assert len(text) > 10  # 十分な長さがあることの簡易チェック
 
 
 @pytest.mark.asyncio
