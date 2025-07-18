@@ -23,7 +23,7 @@ Docker volume作成の参考URL：https://qiita.com/kompiro/items/7474b2ca6efeeb
 
 1.  **リポジトリをクローンします:**
     ```bash
-    [git clone xxx](https://github.com/morikazu1119/Medical-Multi-Agent.git)
+    git clone https://github.com/morikazu1119/Medical-Multi-Agent.git
     cd Medical-Multi-Agent
     ```
 2.  **key.envの作成**
