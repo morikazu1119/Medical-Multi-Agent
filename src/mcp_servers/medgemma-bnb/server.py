@@ -66,11 +66,13 @@ def _infer_worker(conn, messages, quant_mode: str):
         processor = AutoProcessor.from_pretrained(
             cfg.container.medgemma.model_id,
             local_files_only=True,
+            use_fast=True,
             image_processor_kwargs={"input_data_format": "HWC"},
         )
 
         # --- 2) 推論 -------------------------------------------------------
         logging.info("[Child] Starting inference...")
+
         inputs = processor.apply_chat_template(
             messages,
             add_generation_prompt=True,
@@ -78,6 +80,9 @@ def _infer_worker(conn, messages, quant_mode: str):
             return_dict=True,
             return_tensors="pt",
         ).to(model.device, dtype=torch.bfloat16)
+
+        logging.info(f"[Child] Model device: {next(model.parameters()).device}")
+        logging.info(f"[Child] Input tensor device: {inputs.input_ids.device}")
 
         with torch.inference_mode():
             output_ids = model.generate(

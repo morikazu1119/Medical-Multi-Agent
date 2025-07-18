@@ -1,6 +1,6 @@
 pipeline:
   # MCP API 設定
-  mcp_urls: ["http://localhost:10002/mcp/", "http://localhost:10003/mcp/", "http://localhost:10004/mcp/"]
+  mcp_urls: ["http://localhost:10002/mcp/", "http://localhost:10004/mcp/"]
 
 container:
   medgemma:
