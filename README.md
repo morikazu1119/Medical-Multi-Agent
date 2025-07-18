@@ -8,10 +8,11 @@ MCPクライアントの構造はかなり単純であるため、より深いAI
 今後も少しずつ改良を進めていけたらと思います。
 
 **※コンテナ間のモデルはvolumeで共有しています。そのため、volumeを作成し、その中にhugginfaceからダウンロードしたモデルを格納する必要があります。しかし、Geminiコンテナであれば、無料枠のAPIで利用できるのとvolumeが必要ないため、手っ取り早く試したい方はGeminiコンテナがおすすめです。**
+Docker volume作成の参考URL：https://qiita.com/kompiro/items/7474b2ca6efeeb0df80f
 
 ## ✨ 主な特徴
 
-- **複数のLLMサーバー**: Gemini, MedGemmaなど、複数のLLMサーバーをサポートしています。
+- **複数のLLMサーバー**: Gemini, MedGemma, Lingshuなど、複数のLLMサーバーをサポートしています。
 - **コンテナベース**: Docker Composeを使用して、各サーバーを簡単に起動・管理できます。
 - **品質保証**: `pytest`によるテスト、`flake8`と`pre-commit`によるコード品質チェックの仕組みを備えています。（ローカルでの実行を想定）
 
