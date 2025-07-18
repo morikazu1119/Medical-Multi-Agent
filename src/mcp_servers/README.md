@@ -7,8 +7,8 @@
 ## 📂 ディレクトリ構成
 
 - **gemini/**: GoogleのGeminiモデルを使用するサーバーです。
-- **medgemma/**: GoogleのMedGemmaモデルを使用するサーバーです。
-- **medgemma-bnb/**: 4-bit NormalFloat (BNB) で量子化されたMedGemmaモデルを使用するサーバーです。
+- **medgemma-bnb/**: 4-bit NormalFloat (BNB) で量子化されたMedGemmaモデルを使用するサーバーです。量子化はsrc/config/config.yamlで指定できます。
+- **lingshu-bnb/**: 4-bit NormalFloat (BNB) で量子化されたLingshuモデルを使用するサーバーです。量子化はsrc/config/config.yamlで指定できます。
 - **sample/**: 開発やテストのためのサンプルサーバーです。
 
 ## 🐳 Docker
