@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Architecture Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .user-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .user-box {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(44, 62, 80, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .user-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .arrow {
+            font-size: 30px;
+            color: #34495e;
+            margin: 20px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .prompt-label {
+            color: #34495e;
+            font-size: 18px;
+            margin: 10px 0;
+            font-weight: 300;
+        }
+
+        .orchestrator-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .orchestrator-box {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px 50px;
+            border-radius: 15px;
+            font-size: 26px;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+        }
+
+        .orchestrator-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .mcp-label {
+            position: absolute;
+            top: -10px;
+            right: -20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #e74c3c;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .services-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: nowrap;
+        }
+
+        .service-item {
+            flex: 1;
+            text-align: center;
+            background: #0073e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 115, 230, 0.3);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 0;
+        }
+
+        .service-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0, 115, 230, 0.4);
+        }
+
+        .service-box {
+            background: white;
+            color: #333;
+            padding: 20px 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .docker-label {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .mcp-server-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        .connection-lines {
+            position: relative;
+            height: 60px;
+            margin: 30px 0;
+        }
+
+        .connection-lines::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #34495e, transparent);
+            transform: translateX(-50%);
+        }
+
+        .connection-lines::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #34495e, transparent);
+            transform: translateY(-50%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+            
+            .services-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .service-item {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-section">
+            <div class="user-box">User</div>
+            <div class="arrow">↓</div>
+            <div class="prompt-label">prompt</div>
+        </div>
+
+        <div class="orchestrator-section">
+            <div class="orchestrator-box">
+                Orch AI
+                <div class="mcp-label">MCPクライアント</div>
+            </div>
+        </div>
+
+        <div class="connection-lines"></div>
+
+        <div class="services-section">
+            <div class="service-item">
+                <div class="docker-label">Docker</div>
+                <div class="service-box">Gemini</div>
+                <div class="mcp-server-label">MCPサーバー</div>
+            </div>
+            
+            <div class="service-item">
+                <div class="docker-label">Docker</div>
+                <div class="service-box">Med Gemma</div>
+                <div class="mcp-server-label">MCPサーバー</div>
+            </div>
+            
+            <div class="service-item">
+                <div class="docker-label">Docker</div>
+                <div class="service-box">Lingshu</div>
+                <div class="mcp-server-label">MCPサーバー</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
