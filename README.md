@@ -1,6 +1,6 @@
 # 🏥 Medical-Multi-Agent（MMA）
 
-![alt text](img.png)
+![alt text](docs/images/image.png)
 
 医療用のマルチエージェントシステムです。（デモ版）
 MCPクライアントにユーザーからプロンプトで指示を出すことで、Dockerコンテナ上のMCPサーバーを呼び出し、推論を行い、その結果をMCPクライアントが要約し出力します。
