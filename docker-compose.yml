@@ -75,26 +75,25 @@ services:
       - count: all
       - devices: all
 
-  # TODO: コードの修正
-  # medsiglip-mediphi-bnb:
-  #   depends_on:
-  #     - torch-cuda
-  #   build:
-  #     context: ./src/mcp_servers/medsiglip-mediphi-bnb
-  #     dockerfile: Dockerfile
-  #     args:
-  #       HOST: 0.0.0.0
-  #       PORT: 1117
-  #   container_name: medsiglip-mediphi-bnb_server
-  #   ports:
-  #     - "1117:1117"
-  #   restart: unless-stopped
-  #   volumes:
-  #     - slum-volume:/mnt/slum
-  #     - ./src/config/config.yaml:/app/config.yaml
-  #   gpus:
-  #     - count: all
-  #     - devices: all
+  blip-mediphi-bnb:
+    depends_on:
+      - torch-cuda
+    build:
+      context: ./src/mcp_servers/blip-mediphi-bnb
+      dockerfile: Dockerfile
+      args:
+        HOST: 0.0.0.0
+        PORT: 10005
+    container_name: blip-mediphi-bnb_server
+    ports:
+      - "10005:10005"
+    restart: unless-stopped
+    volumes:
+      - slum-volume:/mnt/slum
+      - ./src/config/config.yaml:/app/config.yaml
+    gpus:
+      - count: all
+      - devices: all
 
 volumes:
   slum-volume:
