@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医療用マルチエージェントシステム</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .system-diagram {
+            position: relative;
+            height: 700px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #e9ecef;
+        }
+        
+        .agent {
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .agent:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .agent-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .agent-subtitle {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+        
+        .diagnosis-agent {
+            top: 50px;
+            left: 50px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        
+        .treatment-agent {
+            top: 50px;
+            right: 50px;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+        
+        .pharmacy-agent {
+            bottom: 200px;
+            left: 50px;
+            background: linear-gradient(135deg, #45b7d1, #3498db);
+        }
+        
+        .imaging-agent {
+            bottom: 200px;
+            right: 50px;
+            background: linear-gradient(135deg, #96ceb4, #27ae60);
+        }
+        
+        .lab-agent {
+            top: 200px;
+            left: 200px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .patient-agent {
+            top: 200px;
+            right: 200px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .coordinator-agent {
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            width: 200px;
+            height: 100px;
+        }
+        
+        .mcp-layer {
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .connection-1 { top: 110px; left: 230px; width: 150px; }
+        .connection-2 { top: 110px; right: 230px; width: 150px; }
+        .connection-3 { bottom: 260px; left: 230px; width: 150px; }
+        .connection-4 { bottom: 260px; right: 230px; width: 150px; }
+        .connection-5 { top: 260px; left: 380px; width: 150px; }
+        .connection-6 { top: 260px; right: 380px; width: 150px; }
+        
+        .vertical-connection {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+        
+        .v-conn-1 { top: 170px; left: 139px; height: 80px; }
+        .v-conn-2 { top: 170px; right: 139px; height: 80px; }
+        .v-conn-3 { bottom: 150px; left: 50%; transform: translateX(-50%); height: 80px; }
+        
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .legend h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .feature-list {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .feature-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .feature-card li {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>医療用マルチエージェントシステム</h1>
+        
+        <div class="system-diagram">
+            <!-- エージェント配置 -->
+            <div class="agent diagnosis-agent">
+                <div class="agent-title">診断エージェント</div>
+                <div class="agent-subtitle">症状分析・診断支援</div>
+            </div>
+            
+            <div class="agent treatment-agent">
+                <div class="agent-title">治療エージェント</div>
+                <div class="agent-subtitle">治療計画・処方提案</div>
+            </div>
+            
+            <div class="agent pharmacy-agent">
+                <div class="agent-title">薬剤エージェント</div>
+                <div class="agent-subtitle">薬剤情報・相互作用</div>
+            </div>
+            
+            <div class="agent imaging-agent">
+                <div class="agent-title">画像診断エージェント</div>
+                <div class="agent-subtitle">医用画像解析</div>
+            </div>
+            
+            <div class="agent lab-agent">
+                <div class="agent-title">検査エージェント</div>
+                <div class="agent-subtitle">検査結果解析</div>
+            </div>
+            
+            <div class="agent patient-agent">
+                <div class="agent-title">患者管理エージェント</div>
+                <div class="agent-subtitle">患者情報・履歴管理</div>
+            </div>
+            
+            <div class="agent coordinator-agent">
+                <div class="agent-title">統合コーディネーター</div>
+                <div class="agent-subtitle">A2A通信・ワークフロー制御</div>
+            </div>
+            
+            <!-- MCP層 -->
+            <div class="mcp-layer">
+                <div>MCP (Machine Context Protocol)</div>
+            </div>
+            
+            <!-- 接続線 -->
+            <div class="connection connection-1"></div>
+            <div class="connection connection-2"></div>
+            <div class="connection connection-3"></div>
+            <div class="connection connection-4"></div>
+            <div class="connection connection-5"></div>
+            <div class="connection connection-6"></div>
+            
+            <div class="vertical-connection v-conn-1"></div>
+            <div class="vertical-connection v-conn-2"></div>
+            <div class="vertical-connection v-conn-3"></div>
+        </div>
+        
+        <div class="legend">
+            <h3>システム構成要素</h3>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);"></div>
+                <span><strong>診断エージェント</strong>: 症状分析、鑑別診断、診断支援</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);"></div>
+                <span><strong>治療エージェント</strong>: 治療計画立案、処方提案</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #45b7d1, #3498db);"></div>
+                <span><strong>薬剤エージェント</strong>: 薬剤情報管理、相互作用チェック</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #96ceb4, #27ae60);"></div>
+                <span><strong>画像診断エージェント</strong>: 医用画像解析、異常検出</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #f39c12, #e67e22);"></div>
+                <span><strong>検査エージェント</strong>: 検査結果解析、基準値判定</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></div>
+                <span><strong>患者管理エージェント</strong>: 患者情報管理、履歴追跡</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #ffd700, #ffb347);"></div>
+                <span><strong>MCP層</strong>: エージェント間通信プロトコル</span>
+            </div>
+        </div>
+        
+        <div class="feature-list">
+            <div class="feature-card">
+                <h4>🔄 A2A通信の特徴</h4>
+                <ul>
+                    <li>エージェント間の直接通信</li>
+                    <li>リアルタイム情報共有</li>
+                    <li>分散処理による高速応答</li>
+                    <li>各エージェントの専門性活用</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>🛠️ MCPの役割</h4>
+                <ul>
+                    <li>統一された通信規格</li>
+                    <li>コンテキスト情報の共有</li>
+                    <li>セキュリティ・認証管理</li>
+                    <li>エラーハンドリング</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>🏥 医療ドメインの管理</h4>
+                <ul>
+                    <li>診断：症状分析・鑑別診断</li>
+                    <li>治療：治療計画・処方管理</li>
+                    <li>薬剤：薬剤情報・相互作用</li>
+                    <li>画像：医用画像解析</li>
+                    <li>検査：検査結果解析</li>
+                    <li>患者：患者情報管理</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h4>⚙️ システムの利点</h4>
+                <ul>
+                    <li>専門性の高い診断支援</li>
+                    <li>包括的な患者ケア</li>
+                    <li>エラー削減・品質向上</li>
+                    <li>効率的なワークフロー</li>
+                    <li>スケーラブルなシステム</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

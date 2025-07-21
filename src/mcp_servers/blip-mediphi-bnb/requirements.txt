@@ -1,0 +1,11 @@
+mcp
+accelerate
+transformers
+sentencepiece
+Pillow
+huggingface_hub
+pydantic
+bitsandbytes
+hydra-core
+flash-attn
+protobuf
