@@ -74,7 +74,7 @@ python src/demo/main-cli.py
 
 こちらはマルチエージェントかつ複数回の議論を行うプログラムのGUI版です。**streamlitが必要です**
 ```bash
-python src/demo/main-gui.py
+streamlit run src/demo/main-gui.py
 ```
 
 ## ✅ テスト
