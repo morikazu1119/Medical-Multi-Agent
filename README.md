@@ -59,12 +59,22 @@ docker-compose up -d --build
 
 こちらはスクリプト内で実行するMCPのURLを1つ決めてください
 ```bash
-python src/check_single_mcp.py
+python src/demo/check_single_mcp.py
 ```
 
 こちらは`src/config/config.yaml`の`mcp_url`に配列でURLを指定してください。
 ```bash
-python src/check_multi_mcp.py
+python src/demo/check_multi_mcp.py
+```
+
+こちらはマルチエージェントかつ複数回の議論を行うプログラムのCLI版です。
+```bash
+python src/demo/main-cli.py
+```
+
+こちらはマルチエージェントかつ複数回の議論を行うプログラムのGUI版です。**streamlitが必要です**
+```bash
+python src/demo/main-gui.py
 ```
 
 ## ✅ テスト
