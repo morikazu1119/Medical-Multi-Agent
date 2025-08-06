@@ -17,11 +17,10 @@ container:
     max_tokens: 512 # 最大トークン数
     temperature: 0.2 # 温度パラメータ
 
-  medsiglip:
-    mcp_name: "medsiglip-448" # MCP名
-    model_id: "/mnt/slum/models/medsiglip-448" # google/medsiglip-448
+  blip:
+    model_id: "/mnt/slum/models/blip-image-captioning-large" # Salesforce/blip-image-captioning-large
     quant_mode: 4bit # 量子化モード (4bit, 8bit, or None)
-    max_tokens: 512 # 最大トークン数
+    max_tokens: 50 # 最大トークン数
     temperature: 0.2 # 温度パラメータ
 
   lingshu:
