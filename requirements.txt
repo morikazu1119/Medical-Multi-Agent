@@ -7,3 +7,4 @@ pytest
 pre-commit
 pillow
 pytest-asyncio
+streamlit
