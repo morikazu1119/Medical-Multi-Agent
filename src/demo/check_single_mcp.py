@@ -21,7 +21,7 @@ client = genai.Client(api_key=API_KEY)
 
 async def main():
     # 1) Streamable HTTP で MCP サーバーに接続
-    mcp_url = os.getenv("MCP_URL", "http://localhost:1117/mcp")
+    mcp_url = os.getenv("MCP_URL", "http://localhost:10003/mcp")
     async with streamablehttp_client(mcp_url) as (read_stream, write_stream, _):
         # 2) MCP セッションを開始してツールを初期化
         async with ClientSession(read_stream, write_stream) as session:
